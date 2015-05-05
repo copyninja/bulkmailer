@@ -1,0 +1,23 @@
+package main
+
+import (
+	"strings"
+	"fmt"
+)
+
+type Address struct {
+	FirstName, LastName string
+	Email string
+}
+
+func (a Address) String() string {
+	return fmt.Sprintf("%s %s <%s>",
+		a.FirstName, a.LastName, a.Email)
+}
+
+func NewAddress(value string) Address {
+	tmp := strings.Split(value, " ")
+	tmpAddress := tmp[len(tmp) - 1]
+	return Address{tmp[0], strings.Join(tmp[1:len(tmp)], " "),
+		tmpAddress[1:len(tmpAddress)]}
+}
