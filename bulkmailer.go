@@ -189,6 +189,14 @@ func main() {
 		m.From = fromAddress
 		m.To = []string{mail.Email}
 
+		if len(files) > 0 {
+			for _, file := range files {
+				if err := m.Attach(file); err != nil {
+					log.Fatalln("Attachment	failed" + err)
+				}
+			}
+		}
+
 		if verifyServerCert {
 			if err := sendmail(smtpServer, auth,
 				fromAddress, m.Tolist(), m.Bytes()); err != nil {
