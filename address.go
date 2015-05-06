@@ -18,6 +18,6 @@ func (a Address) String() string {
 func NewAddress(value string) Address {
 	tmp := strings.Split(value, " ")
 	tmpAddress := tmp[len(tmp)-1]
-	return Address{tmp[0], strings.Join(tmp[1:len(tmp)], " "),
+	return Address{tmp[0], strings.Join(tmp[1:len(tmp)-1], " "),
 		tmpAddress[1 : len(tmpAddress)-1]}
 }
