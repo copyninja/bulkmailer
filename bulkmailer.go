@@ -180,7 +180,8 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	auth := smtp.PlainAuth("", user, password, smtpServer)
+	host, _, _ := net.SplitHostPort(smtpServer)
+	auth := smtp.PlainAuth("", user, password, host)
 	for _, mail := range addresses {
 		body := strings.Replace(string(content), "REPLACE_ME",
 			mail.FirstName, 1)
