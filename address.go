@@ -19,5 +19,5 @@ func NewAddress(value string) Address {
 	tmp := strings.Split(value, " ")
 	tmpAddress := tmp[len(tmp)-1]
 	return Address{tmp[0], strings.Join(tmp[1:len(tmp)], " "),
-		tmpAddress[1:len(tmpAddress)]}
+		tmpAddress[1:len(tmpAddress)-1]}
 }
