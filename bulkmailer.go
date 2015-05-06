@@ -2,17 +2,17 @@ package main
 
 import (
 	"bytes"
+	"crypto/tls"
 	"errors"
 	"flag"
 	"fmt"
 	"github.com/scorredoira/email"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/smtp"
 	"os"
 	"strings"
-	"crypto/tls"
-	"net"
 )
 
 var addressFile string
@@ -126,7 +126,6 @@ func sendmail(addr string, a smtp.Auth, from string, to []string, msg []byte) er
 	if err = c.Auth(a); err != nil {
 		return err
 	}
-
 
 	if err = c.Mail(from); err != nil {
 		return err

@@ -1,13 +1,13 @@
 package main
 
 import (
-	"strings"
 	"fmt"
+	"strings"
 )
 
 type Address struct {
 	FirstName, LastName string
-	Email string
+	Email               string
 }
 
 func (a Address) String() string {
@@ -17,7 +17,7 @@ func (a Address) String() string {
 
 func NewAddress(value string) Address {
 	tmp := strings.Split(value, " ")
-	tmpAddress := tmp[len(tmp) - 1]
+	tmpAddress := tmp[len(tmp)-1]
 	return Address{tmp[0], strings.Join(tmp[1:len(tmp)], " "),
 		tmpAddress[1:len(tmpAddress)]}
 }
