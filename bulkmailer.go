@@ -192,7 +192,7 @@ func main() {
 		if len(files) > 0 {
 			for _, file := range files {
 				if err := m.Attach(file); err != nil {
-					log.Fatalln("Attachment	failed" + err)
+					log.Fatalln("Attachment	failed", err)
 				}
 			}
 		}
