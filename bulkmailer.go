@@ -11,6 +11,8 @@ import (
 	"net/smtp"
 	"os"
 	"strings"
+	"crypto/tls"
+	"net"
 )
 
 var addressFile string
@@ -20,6 +22,7 @@ var fromAddress string
 var smtpServer string
 var user string
 var password string
+var verifyServerCert bool
 
 func init() {
 	flag.StringVar(&fromAddress, "from", "",
@@ -36,6 +39,8 @@ func init() {
 		"Username for SMTP server login")
 	flag.StringVar(&password, "password", "",
 		"Password for SMTP server login")
+	flag.BoolVar(&verifyServerCert, "no-verify-server-cert", false,
+		`Do not verify TLS certficate provided by server`)
 }
 
 type attachments []string
@@ -102,6 +107,50 @@ func validateArgs() error {
 	return nil
 }
 
+func sendmail(addr string, a smtp.Auth, from string, to []string, msg []byte) error {
+	c, err := smtp.Dial(addr)
+	if err != nil {
+		return err
+	}
+	defer c.Close()
+
+	host, _, _ := net.SplitHostPort(addr)
+	if ok, _ := c.Extension("STARTTLS"); ok {
+		config := &tls.Config{ServerName: host,
+			InsecureSkipVerify: true}
+		if err = c.StartTLS(config); err != nil {
+			return err
+		}
+	}
+
+	if err = c.Auth(a); err != nil {
+		return err
+	}
+
+
+	if err = c.Mail(from); err != nil {
+		return err
+	}
+	for _, addr := range to {
+		if err = c.Rcpt(addr); err != nil {
+			return err
+		}
+	}
+	w, err := c.Data()
+	if err != nil {
+		return err
+	}
+	_, err = w.Write(msg)
+	if err != nil {
+		return err
+	}
+	err = w.Close()
+	if err != nil {
+		return err
+	}
+	return c.Quit()
+}
+
 func main() {
 	flag.Parse()
 
@@ -140,8 +189,15 @@ func main() {
 		m.From = fromAddress
 		m.To = []string{fmt.Sprint(mail)}
 
-		if err := email.Send(smtpServer, auth, m); err != nil {
-			log.Fatalln(err)
+		if verifyServerCert {
+			if err := sendmail(smtpServer, auth,
+				fromAddress, m.Tolist(), m.Bytes()); err != nil {
+				log.Fatalln(err)
+			}
+		} else {
+			if err := email.Send(smtpServer, auth, m); err != nil {
+				log.Fatalln(err)
+			}
 		}
 
 		log.Printf("Mail sent to %s successfully\n",
