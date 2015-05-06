@@ -187,7 +187,7 @@ func main() {
 			mail.FirstName, 1)
 		m := email.NewMessage(subjectLine, body)
 		m.From = fromAddress
-		m.To = []string{fmt.Sprint(mail)}
+		m.To = []string{mail.Email}
 
 		if verifyServerCert {
 			if err := sendmail(smtpServer, auth,
