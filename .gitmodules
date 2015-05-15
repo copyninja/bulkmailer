@@ -1,0 +1,3 @@
+[submodule "vendor/src/github.com/scorredoira/email"]
+	path = vendor/src/github.com/scorredoira/email
+	url = https://github.com/scorredoira/email
